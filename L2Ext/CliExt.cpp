@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CliExt.h"
 #include "DB.h"
+#include "Encryption.h"
 #include "L2NetworkVote.h"
 
 CCliExt g_CliExt;
@@ -36,6 +37,7 @@ void CCliExt::Init()
 		Bind(12, CPHReplyMD5Packet);
 		g_DB.RequestLoadBannedHardwareId();
 	}
+	CPacketEncryption::Init();
 }
 
 void CCliExt::LoadINI()

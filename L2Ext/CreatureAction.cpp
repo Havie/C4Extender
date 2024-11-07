@@ -593,7 +593,7 @@ bool CreatureAction::MoveActionExOnStart(CMoveActionEx *pAction)
 					if(User *pUser = pCreature->SafeCastUser())
 					{
 						pUser->ActionFailed();
-						g_Log.Add(CLog::Blue, "[%s] moving creature[%S] to [%f][%f][%f] blocked!", __FUNCTION__, pCreature->pSD->wszName, pTarget->pSD->Pos.x, pTarget->pSD->Pos.y, pTarget->pSD->Pos.z);
+			//			g_Log.Add(CLog::Blue, "[%s] moving creature[%S] to [%f][%f][%f] blocked!", __FUNCTION__, pCreature->pSD->wszName, pTarget->pSD->Pos.x, pTarget->pSD->Pos.y, pTarget->pSD->Pos.z);
 					}
 				
 					return false;
@@ -624,7 +624,7 @@ bool CreatureAction::MoveActionOnStart(CMoveAction *pAction)
 				if(User *pUser = pCreature->SafeCastUser())
 				{
 					pUser->ActionFailed();
-					g_Log.Add(CLog::Blue, "[%s] moving creature[%S] to [%f][%f][%f] blocked!", __FUNCTION__, pCreature->pSD->wszName, pAction->GetDestination().x, pAction->GetDestination().y, pAction->GetDestination().z);
+			//		g_Log.Add(CLog::Blue, "[%s] moving creature[%S] to [%f][%f][%f] blocked!", __FUNCTION__, pCreature->pSD->wszName, pAction->GetDestination().x, pAction->GetDestination().y, pAction->GetDestination().z);
 				}
 			
 				return false;
@@ -1058,14 +1058,9 @@ void CreatureAction::OnActivateSkill(CSkillInfo *pSI, CCreature *pCreature, CCre
 
 bool CreatureAction::UseItem(CCreature *pCreature, CItem *pItem, BOOL force)
 {
-	g_Log.Add(CLog::Blue,"[%s] Force(BOOL) = [%d]",__FUNCTION__,force);
-
 	guard;
 
 	INT32 itemId = 0;
-	
-	g_Log.Add(CLog::Error,"IsValidItem = [%d]",pItem->IsValidItem());
-
 	if(g_InfinityShot.IsEnabled())
 	{
 		if(pItem->IsValidItem())
@@ -1161,12 +1156,7 @@ int CreatureAction::ExpInc(CCreature *pCreature, int exp, int affectKarma)
 
 bool CreatureAction::OnValidateSetItem(CCreature *pCreature, int nSlotType)
 {
-	g_Log.Add(CLog::Blue,"[%s] nSlotType = [%d]",__FUNCTION__,nSlotType);
-
 	bool bRet = pCreature->ValidateSetItem(nSlotType);
-	
-	g_Log.Add(CLog::Error,"bRet = [%d]",bRet);
-
 	if(pCreature->ValidUser())
 	{
 		User *pUser = pCreature->GetUser();

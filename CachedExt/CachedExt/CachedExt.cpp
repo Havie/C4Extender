@@ -153,7 +153,7 @@ void CachedExt::Initialize()
 	hMutex = CreateMutex(NULL, false, _T("Global\\CacheD"));
 	if(GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		MessageBox(NULL, _T("CacheD is already running!"), _T("C4 Extension"), MB_OK);
+		MessageBox(NULL, _T("CacheD is already running!"), _T("Interlude Extension"), MB_OK);
 		ExitProcess(-1);
 		return;
 	}

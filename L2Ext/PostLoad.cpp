@@ -57,6 +57,7 @@
 #include "CliExt.h"
 #include "PKPvPStatus.h"
 #include "ItemAutoConsume.h"
+#include "LoginDb.h"
 #include "CharacterLock.h"
 #include "DailyPvP.h"
 #include "SubStack.h"
@@ -76,7 +77,6 @@
 #include "PIN.h"
 #include "PvPAnnounce.h"
 #include "ClanPvPStatus.h"
-#include "KeyEngine.h"
 
 extern double g_PartyExpRate;
 
@@ -119,125 +119,116 @@ void CPostLoad::FirstLoad(LPVOID Instance)
 	_f LoadPathNode = (_f) 0x0073FE70;
 	LoadPathNode(Instance);
 
-	CKeyEngine& ke = CKeyEngine::getInstance();
-	ke.init();
-	if(ke.validated() && ke.getState() == KeyEngine::StateValid)
+	if(CLicense::GetInstance().CanUse(LicenseExtUse) && !IsHardwareIdHack())
 	{
-		if(CLicense::GetInstance().CanUse(LicenseExtUse) && !IsHardwareIdHack())
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Online Multipler.");
+		g_OnlineMultipler.Init();
+		if(int UserLimit = g_Config.L2ServerConfig.GetUserLimit())
 		{
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Online Multipler.");
-			g_OnlineMultipler.Init();
-			if(int UserLimit = g_Config.L2ServerConfig.GetUserLimit())
-			{
-				g_OnlineMultipler.SetMaxUsers(UserLimit);
-				g_Log.Add(CLog::Blue, "[Ext] Setting new user limit[%d].", UserLimit);
-			}
-
-			g_HtmlFilter.Init();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Clan System.");
-			ClanSys::Initialize();
-			ClanSys::ApplyNewPenalty();
-			g_ResidenceDBEx.Load();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Item Enchant System.");
-			CItemEnchant::Initialize();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Auto Learn Skill System");
-			CAutoLearn::Initialize();
-
-			SocketLimiter::Initialize();
-
-			g_DuelSystem.Initialize();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Manor System");
-			CManor::Initialize();
-
-			if(g_Config.IsSet(CConfig::SIEGE_REPORT))
-			{
-				g_Log.Add(CLog::Blue, "[Ext] Initializing Siege Stats System");
-				CSiegeStat::GetInstance().Initialize();
-			}
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Offline Shop System");
-			g_OfflineShop.Initialize();
-
-			g_ArmorMasteryDB.ReadData();
-			g_ArmorPenalty.Initialize();
-			
-			g_SpawnProtection.Initialize();
-			
-			if(g_Config.IsSet(CConfig::ITEM_REUSE_MANAGER))
-			{
-				g_ItemReuseManager.Initialize();
-			}
-			if(g_Config.IsSet(CConfig::SKILL_REUSE_MANAGER))
-			{
-				g_SkillReuseManager.Initialize();
-			}
-			
-			g_PlayerCustomizer.Init();
-
-			if(g_Config.IsSet(CConfig::SPIRIT_SYSTEM))
-			{
-				g_SpiritSystem.Initialize();
-			}
-
-			g_MiningSystem.Init();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Logger");
-			g_Logger.Initialize();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Skill Data Parser");
-			SkillDataParser::Initialize();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Item Data Parser");
-			CItemDataParser::Init();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Packet Handler");
-			PacketHandler::Initialize();
-
-			g_UserExCommand.Init();
-
-			CDBPacket::Init();
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Team Container");
-			g_TeamContainer.Initialize();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing VIP System");
-			g_VIPSystem.Init();
-
-			g_Log.Add(CLog::Blue, "[Ext] Initializing Enchanted Set System");
-			g_EnchantedSet.Initialize();
-			g_Log.Add(CLog::Blue, "[Ext] Loading Augmentation Data");
-			g_Augmentation.ReadStatData();
-			g_Augmentation.ReadSkillData();
-			g_Augmentation.ReadNameData();
-			g_Log.Add(CLog::Blue, "[Ext] Augmenation : BlockedGlows[%d] BlockedItems[%d]", g_Config.AugmentationInfo.GetBlockedGlowCount(), g_Config.AugmentationInfo.GetBlockedItemCount());
-			
-			g_SkillDBEx.Initialize();
-			g_NpcDb.Init();
-			g_UserDB.Initialize();
-			g_TeleportBypass.Init();
-			g_AIOSystem.Init();
-			g_ObsceneFilter.Init();
-			CNpcSocket::Initialize();
-			CL2LevelUP::StartSystem();
-			g_IpBlocker.Initialize();
-			srand(time(NULL));
-			InitializeSkillEnchanting2();
-
-			g_ItemAutoConsume.Init();
-
-			g_PrivateStoreSystem.Init();
-
-			g_WorldCollision.Init();
-			g_HtmlCache.Init();
+			g_OnlineMultipler.SetMaxUsers(UserLimit);
+			g_Log.Add(CLog::Blue, "[Ext] Setting new user limit[%d].", UserLimit);
 		}
-	}
-	else
-	{
-		ke.showInvalidKeyMessage();
-		ExitProcess(-1);
+
+		g_HtmlFilter.Init();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Clan System.");
+		ClanSys::Initialize();
+		ClanSys::ApplyNewPenalty();
+		g_ResidenceDBEx.Load();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Item Enchant System.");
+		CItemEnchant::Initialize();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Auto Learn Skill System");
+		CAutoLearn::Initialize();
+
+		SocketLimiter::Initialize();
+
+		g_DuelSystem.Initialize();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Manor System");
+		CManor::Initialize();
+
+		if(g_Config.IsSet(CConfig::SIEGE_REPORT))
+		{
+			g_Log.Add(CLog::Blue, "[Ext] Initializing Siege Stats System");
+			CSiegeStat::GetInstance().Initialize();
+		}
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Offline Shop System");
+		g_OfflineShop.Initialize();
+
+		g_ArmorMasteryDB.ReadData();
+		g_ArmorPenalty.Initialize();
+		
+		g_SpawnProtection.Initialize();
+		
+		if(g_Config.IsSet(CConfig::ITEM_REUSE_MANAGER))
+		{
+			g_ItemReuseManager.Initialize();
+		}
+		if(g_Config.IsSet(CConfig::SKILL_REUSE_MANAGER))
+		{
+			g_SkillReuseManager.Initialize();
+		}
+		
+		g_PlayerCustomizer.Init();
+
+		if(g_Config.IsSet(CConfig::SPIRIT_SYSTEM))
+		{
+			g_SpiritSystem.Initialize();
+		}
+
+		g_MiningSystem.Init();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Logger");
+		g_Logger.Initialize();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Skill Data Parser");
+		SkillDataParser::Initialize();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Item Data Parser");
+		CItemDataParser::Init();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Packet Handler");
+		PacketHandler::Initialize();
+
+		g_UserExCommand.Init();
+
+		CDBPacket::Init();
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Team Container");
+		g_TeamContainer.Initialize();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing VIP System");
+		g_VIPSystem.Init();
+
+		g_Log.Add(CLog::Blue, "[Ext] Initializing Enchanted Set System");
+		g_EnchantedSet.Initialize();
+		g_Log.Add(CLog::Blue, "[Ext] Loading Augmentation Data");
+		g_Augmentation.ReadStatData();
+		g_Augmentation.ReadSkillData();
+		g_Augmentation.ReadNameData();
+		g_Log.Add(CLog::Blue, "[Ext] Augmenation : BlockedGlows[%d] BlockedItems[%d]", g_Config.AugmentationInfo.GetBlockedGlowCount(), g_Config.AugmentationInfo.GetBlockedItemCount());
+		
+		g_SkillDBEx.Initialize();
+		g_NpcDb.Init();
+		g_UserDB.Initialize();
+		g_TeleportBypass.Init();
+		g_AIOSystem.Init();
+		g_ObsceneFilter.Init();
+		CNpcSocket::Initialize();
+		CL2LevelUP::StartSystem();
+		g_IpBlocker.Initialize();
+		srand(time(NULL));
+		InitializeSkillEnchanting2();
+
+		g_ItemAutoConsume.Init();
+
+		g_PrivateStoreSystem.Init();
+
+		g_WorldCollision.Init();
+		g_HtmlCache.Init();
+		g_LoginDb.Init();
 	}
 	VIRTUALIZER_TIGER_RED_END;
 }

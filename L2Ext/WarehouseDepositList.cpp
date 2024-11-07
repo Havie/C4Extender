@@ -19,10 +19,22 @@ int CPacketFix::WarehouseDepositListFix(PCHAR buff, int bufLen, const char *form
 	WORD wUnkn3 = va_arg(tag, WORD);
 	DWORD DatabaseID = va_arg(tag, DWORD);
 	va_end (tag);
-	char * newFormat = "hdddhhdhhhd"; //C4 Format
-		
+	char * newFormat = "hdddhhdhhhddd"; //New IL Format
+	DWORD AugmentationID1 = 0;
+	DWORD AugmentationID2 = 0;
+	CItem *pItem = CObject::GetObjectBySID(ObjectID)->CastItem();
+	if(pItem->IsValidItem())
+	{
+		if(pItem->nManaLeft)
+			return 0;
+		if(pItem->nAugmentationID)
+		{
+			AugmentationID1 = CAugmentation::GetFirstEffectID(pItem->nAugmentationID);
+			AugmentationID2 = CAugmentation::GetSecondEffectID(pItem->nAugmentationID);
+		}
+	}
 	return Assemble(buff, bufLen, newFormat, ItemType, ObjectID, ItemID, Count, ItemType2, wUnkn
-		,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID);
+		,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID, AugmentationID1, AugmentationID2);
 }
 int CPacketFix::WarehouseDepositListExFix(PCHAR buff, int bufLen, const char *format, ...)
 {
@@ -41,10 +53,17 @@ int CPacketFix::WarehouseDepositListExFix(PCHAR buff, int bufLen, const char *fo
 	WORD wUnkn3 = va_arg(tag, WORD);
 	DWORD DatabaseID = va_arg(tag, DWORD);
 	va_end (tag);
-	char * newFormat = "hdddhhdhhhd"; //C4 Format
-	
+	char * newFormat = "hdddhhdhhhddd"; //New IL Format
+	DWORD AugmentationID1 = 0;
+	DWORD AugmentationID2 = 0;
+	CItem *pItem = CObject::GetObjectBySID(ObjectID)->CastItem();
+	if(pItem->IsValidItem())
+	{
+		if(pItem->nAugmentationID || pItem->nManaLeft || pItem->nProtectionTimeout > time(0))
+			return 0;
+	}
 	return Assemble(buff, bufLen, newFormat, ItemType, ObjectID, ItemID, Count, ItemType2, wUnkn
-		,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID);
+		,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID, AugmentationID1, AugmentationID2);
 }
 
 void CPacketFix::WarehouseDepositListSend(CSocket *pSocket, const char *format, ...)
@@ -80,15 +99,14 @@ void CPacketFix::WarehouseDepositListSend(CSocket *pSocket, const char *format, 
 			WORD wUnkn2 = 0;
 			WORD wUnkn3 = 0;
 			DWORD DatabaseID = 0;
-			
-			Buff = (PCHAR)Disassemble((const unsigned char*)Buff, "hdddhhdhhhd", &ItemType, &ObjectID, &ItemID, &Count, &ItemType2,
-				&wUnkn, &BodyPart, &Enchant, &wUnkn2, &wUnkn3, &DatabaseID);
-			
+			DWORD AugmentationID1 = 0;
+			DWORD AugmentationID2 = 0;
+			Buff = (PCHAR)Disassemble((const unsigned char*)Buff, "hdddhhdhhhddd", &ItemType, &ObjectID, &ItemID, &Count, &ItemType2,
+				&wUnkn, &BodyPart, &Enchant, &wUnkn2, &wUnkn3, &DatabaseID, &AugmentationID1, &AugmentationID2);
 			CItem *pItem = CObject::GetObjectBySID(ObjectID)->CastItem();
-			
 			if(pItem->IsValidItem())
 			{
-				if(pItem->nProtectionTimeout > time(0))
+				if(pItem->nAugmentationID || pItem->nProtectionTimeout > time(0))
 				{
 					continue;
 				}else
@@ -104,14 +122,15 @@ void CPacketFix::WarehouseDepositListSend(CSocket *pSocket, const char *format, 
 					ItemBuff.WriteH(Enchant);
 					ItemBuff.WriteH(wUnkn2);
 					ItemBuff.WriteH(wUnkn3);
-					ItemBuff.WriteD(DatabaseID);					
+					ItemBuff.WriteD(DatabaseID);
+					ItemBuff.WriteD(AugmentationID1);
+					ItemBuff.WriteD(AugmentationID2);
 				}
 			}
 		}
 		packet.WriteH(nNewCount);
 		packet.WriteB((int)ItemBuff.GetSize(), ItemBuff.GetBuff());
-	}
-	else
+	}else
 	{
 		packet.WriteH(ItemCount);
 		packet.WriteB(BuffLen, Buff);

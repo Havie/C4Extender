@@ -21,18 +21,20 @@ int CPacketFix::WarehouseWithdrawList(PCHAR buff, int bufLen, const char *format
 	WORD wUnkn3 = va_arg(tag, WORD);
 	DWORD DatabaseID = va_arg(tag, DWORD);
 	va_end (tag);
-	char * newFormat = "hdddhhdhhhd"; //C4 Format
+	char * newFormat = "hdddhhdhhhddd"; //New IL Format
 	UINT currentIdx = GetThreadIndex();
 	if(currentIdx < 32)
-	{		
+	{
+		DWORD AugmentationID1 = CAugmentation::GetFirstEffectID(g_WareHouseAugmentationId[currentIdx]);
+		DWORD AugmentationID2 = CAugmentation::GetSecondEffectID(g_WareHouseAugmentationId[currentIdx]);
 		g_WareHouseAugmentationId[currentIdx] = 0;
 		return Assemble(buff, bufLen, newFormat, ItemType, ObjectID, ItemID, Count, ItemType2, wUnkn
-			,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID);
+			,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID, AugmentationID1, AugmentationID2);
 	}else
 	{
 		g_Log.Add(CLog::Error, "[%s] Invalid thread index[%d]!", __FUNCTION__, currentIdx);
 		return Assemble(buff, bufLen, newFormat, ItemType, ObjectID, ItemID, Count, ItemType2, wUnkn
-			,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID);
+			,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID, 0, 0);
 	}
 }
 int CPacketFix::WarehouseWithdrawListEx(PCHAR buff, int bufLen, const char *format, ...)
@@ -52,8 +54,9 @@ int CPacketFix::WarehouseWithdrawListEx(PCHAR buff, int bufLen, const char *form
 	WORD wUnkn3 = va_arg(tag, WORD);
 	DWORD DatabaseID = va_arg(tag, DWORD);
 	va_end (tag);
-	char * newFormat = "hdddhhdhhhd"; //C4 Format
-	
+	char * newFormat = "hdddhhdhhhddd"; //New IL Format
+	DWORD AugmentationID1 = 0;
+	DWORD AugmentationID2 = 0;
 	return Assemble(buff, bufLen, newFormat, ItemType, ObjectID, ItemID, Count, ItemType2, wUnkn
-		,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID);
+		,BodyPart, Enchant, wUnkn2, wUnkn3, DatabaseID, AugmentationID1, AugmentationID2);
 }

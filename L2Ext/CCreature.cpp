@@ -43,7 +43,7 @@ bool CCreature::ValidCreature()
 }
 
 bool CCreature::ValidUser()
-{	
+{
 	if(this)
 	{
 		return IsValid(VT_USER);
@@ -396,8 +396,6 @@ void CCreature::ValidateSkillList()
 }
 bool CCreature::ValidateSetItem(int nSlotType)
 {
-	g_Log.Add(CLog::Blue,"[%s] nSlotType = [%d]",__FUNCTION__,nSlotType);
-
 	typedef bool(*f)(CCreature*, int);
 	return f(0x516940L)(this, nSlotType);
 }
@@ -1199,7 +1197,6 @@ void CCreature::MakeCombat()
 
 void CCreature::StopMove()
 {
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
 	typedef void(*f)(CCreature*);
 	f(0x4E4CB0L)(this);
 }

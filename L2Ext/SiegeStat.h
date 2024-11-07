@@ -54,6 +54,8 @@ public:
 		Aden = 5,
 		Innadril = 6,
 		Goddard = 7,
+		Rune = 8,
+		Schuttgard = 9
 	};
 	static CSiegeStat& GetInstance();
 	void Initialize();

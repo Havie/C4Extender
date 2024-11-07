@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "Exploits.h"
 #include "License.h"
+#include "StrixUtils.h"
+
+using namespace License;
 
 HANDLE hMutex;
 
@@ -42,7 +45,7 @@ void L2Ext::BaseData()
 {
 	VIRTUALIZER_TIGER_WHITE_START;
 	GetCurrentDirectory(MAX_PATH, g_ConfigFile);
-	lstrcat(g_ConfigFile, _T("\\C4Ext.ini"));
+	lstrcat(g_ConfigFile, _T("\\IlExt.ini"));
 
 	g_ServerStartTime = time(0);
 
@@ -54,7 +57,7 @@ void L2Ext::BaseData()
 
 	GetEnvironmentVariable(altUserName, g_LicenseName, 255);
 
-	License::CLicense::GetInstance().Init();
+	CLicense::GetInstance().Init();
 
 	UINT npcPort = GetPrivateProfileInt(L"Setting", L"NpcServerPort", 2002, l2server_ini);
 	g_HookManager.WriteMemoryDWORD(0x643A63, npcPort);
@@ -112,10 +115,10 @@ void L2Ext::BaseData()
 	VIRTUALIZER_TIGER_WHITE_END;
 
 	MovLogFiles("LinErrBak");
-	hMutex = CreateMutex(NULL, false, _T("Global\\C4Ext"));
+	hMutex = CreateMutex(NULL, false, _T("Global\\IlExt"));
 	if(GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		MessageBox(NULL, _T("Lineage II server is already running!"), _T("C4 Extension"), MB_OK);
+		MessageBox(NULL, _T("Lineage II server is already running!"), _T("Interlude Extension"), MB_OK);
 		ExitProcess(-1);
 		return;
 	}

@@ -158,8 +158,7 @@ void __thiscall CNetworkHandler::OnConnect(PVOID pInstance, const char* sAddress
 }
 
 int __thiscall CNetworkHandler::HandlePacket(NHandler *pNetwork, NPacket *pPacket)
-{	
-	
+{
 	VIRTUALIZER_START;
 	int ret = 0;
 

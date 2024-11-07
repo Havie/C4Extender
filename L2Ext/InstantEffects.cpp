@@ -215,14 +215,13 @@ void CSkillEffect_i_set_nobless::Instant(CCreature *pCreature, CCreature *pTarge
 
 void CSkillEffect_i_ride_wyvern::Instant(CCreature *pCreature, CCreature *pTarget, CSkillInfo *pSkillInfo, CSkillAction *pAction, double distance)
 {
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
 	if(User *pUser = pCreature->GetUser())
 	{
 		if(pUser->pSD)
 		{
 			if(pUser->pSD->nYongmaType == 0)
 			{
-				pUser->StopMove();		
+				pUser->StopMove();
 				pUser->RideWyvern(1012621, 56);
 			}
 		}
@@ -360,8 +359,6 @@ extern vector<int> g_DispelDebuffException;
 
 void CSkillEffect_i_dispel_debuff_with_exception::Instant(CCreature *pCreature, CCreature *pTarget, CSkillInfo *pSkillInfo, CSkillAction *pAction, double distance)
 {
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
-
 	guard;
 
 	if( pTarget->ValidCreature() )
@@ -1026,7 +1023,6 @@ void CSkillEffect_i_summon_friend::Instant(CCreature *pCreature, CCreature *pTar
 
 void CSkillEffect_i_summon_party::Instant(CCreature *pCreature, CCreature *pTarget, CSkillInfo *pSkillInfo, CSkillAction *pAction, double distance)
 {
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
 	if(User *pUser = pCreature->SafeCastUser())
 	{
 		if(CParty *pParty = pUser->GetParty())
@@ -1082,7 +1078,7 @@ void CSkillEffect_i_summon_party::Instant(CCreature *pCreature, CCreature *pTarg
 									pSocket->SendSystemMessage(wMsg.c_str());
 								}else 
 								{
-									pMember->StopMove();									
+									pMember->StopMove();
 									PlayerAction::OnTeleportToLocation(pMember, x, y, CGeo::GetInstance()->GetZLoc(x, y, z), false);
 								}
 							}
@@ -1154,7 +1150,6 @@ void CSkillEffect_i_target_me_chance::Instant(CCreature *pCreature, CCreature *p
 
 void CSkillEffect_i_teleport_distance::Instant(CCreature *pCreature, CCreature *pTarget, CSkillInfo *pSkillInfo, CSkillAction *pAction, double distance)
 {
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
 	if(pCreature->ValidUser())
 	{
 		//g_Log.Add(CLog::Blue, "[%s] Heading: %d", __FUNCTION__, pCreature->pSD->sHeading);

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="C4Ext"
+	Name="IlExt"
 	ProjectGUID="{9D58C003-2B29-4A89-A6B0-BE14AD47CA9D}"
 	RootNamespace="IlExt"
 	>
@@ -424,7 +424,7 @@
 					Name="Packets"
 					>
 					<Filter
-						Name="C6-&gt;C4"
+						Name="C6"
 						>
 						<File
 							RelativePath=".\CharInfo.cpp"
@@ -574,6 +574,66 @@
 					</File>
 					<File
 						RelativePath=".\SocketDB.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Encryption"
+					>
+					<File
+						RelativePath=".\enc.asm"
+						>
+					</File>
+					<File
+						RelativePath=".\Encryption.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Encryption.h"
+						>
+					</File>
+					<Filter
+						Name="Coder"
+						>
+						<File
+							RelativePath=".\Coder.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Coder.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="IOBufferExt"
+					>
+					<File
+						RelativePath=".\iob.asm"
+						>
+					</File>
+					<File
+						RelativePath=".\IOBufferExt.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\IOBufferExt.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="LoginDb"
+					>
+					<File
+						RelativePath=".\login.asm"
+						>
+					</File>
+					<File
+						RelativePath=".\LoginDb.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\LoginDb.h"
 						>
 					</File>
 				</Filter>
@@ -2167,18 +2227,6 @@
 					RelativePath=".\test.asm"
 					>
 				</File>
-				<Filter
-					Name="KeyEngine"
-					>
-					<File
-						RelativePath=".\KeyEngine.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\KeyEngine.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Rebirth"

@@ -16,7 +16,6 @@ extern UINT g_DefaultTitleColor;
 void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 {
 	guard;
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
 
 	CPacket Packet;
 	if(User *pUser = pSocket->GetUser())
@@ -24,7 +23,7 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 
 		va_list tag;
 		va_start (tag, format); //start reading old packet data and assembling new packet
-	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//0x04
+	/*c*/ Packet.WriteC(va_arg(tag, BYTE));
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//x
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//y
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//z
@@ -45,7 +44,7 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 					}
 				}
 			}
-	/*S*/ Packet.WriteS(wName); //nickname
+			/*S*/ Packet.WriteS(wName); //nickname
 
 			DWORD Race = va_arg(tag, DWORD);
 			DWORD Sex = va_arg(tag, DWORD);
@@ -78,7 +77,7 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(BaseClass);	//class
 
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//level
-	/*d*/ Packet.WriteD(va_arg(tag, INT32));	//Exp
+	/*d*/ Packet.WriteQ(va_arg(tag, INT64));	// - Exp will be Q in c5 format in format
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//str
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//dex
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//con
@@ -92,10 +91,8 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//sp
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//current_load
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//max_load
-	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//unknown SD->nWeaponRange
-	
+	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//unknown
 	//PAPERDOLL_START objectId
-	
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//dhair
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//rear
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//lear
@@ -112,7 +109,7 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//back
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//lrhand
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//hair
-	
+	/*d*/ Packet.WriteD(0); 					//face - interlude addon
 	//PAPERDOLL item class id
 		INT32 dhairId = va_arg(tag, INT32);
 		INT32 rearId = va_arg(tag, INT32);
@@ -130,7 +127,7 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 		INT32 backId = va_arg(tag, INT32);
 		INT32 lrhandId = va_arg(tag, INT32);
 		INT32 hairId = va_arg(tag, INT32);
-		
+		INT32 faceId = 0;
 		if(g_VisualArmor.IsEnabled())
 		{
 			VisualArmorUser& vUser = pUser->pED->visualArmorUser;
@@ -173,9 +170,42 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(backId);	//back
 	/*d*/ Packet.WriteD(lrhandId);	//lrhand
 	/*d*/ Packet.WriteD(hairId);	//hair
-	
+	/*d*/ Packet.WriteD(faceId);						//face - interlude addon
 	//PAPERDOLL_END
-			
+
+			UINT nAugmentation = pUser->GetAugmentationID();
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteD(nAugmentation);//Augmentation ID lhand
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteD(nAugmentation);//Augmentation ID lrhand
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//p_atk
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//p_atk_speed
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//p_def
@@ -196,7 +226,6 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//fly_walk_speed
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//fly_run_speed
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//fly_walk_speed
-	
 	/*f*/ Packet.WriteF(va_arg(tag, double));	//move_multipler
 	/*f*/ Packet.WriteF(va_arg(tag, double));	//atk_speed_multipler
 
@@ -225,11 +254,11 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 			/*d*/ Packet.WriteD(0);	//ally_crest_id
 			}else
 			{
-				/*S*/ Packet.WriteS(va_arg(tag, PWCHAR));	//title
-				/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_id
-				/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_crest_id
-				/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//ally_id
-				/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//ally_crest_id
+			/*S*/ Packet.WriteS(va_arg(tag, PWCHAR));	//title
+			/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_id
+			/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_crest_id
+			/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//ally_id
+			/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//ally_crest_id
 			}
 
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//relation // 0x40 leader rights siege flags: attacker - 0x180 sword over name, defender - 0x80 shield, 0xC0 crown (|leader), 0x1C0 flag (|leader)
@@ -241,10 +270,8 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*h*/ Packet.WriteH(va_arg(tag, WORD));		//cubic_count
 	/*BuffSize*/ DWORD CubicBuffSize = va_arg(tag, DWORD);	//cubic_buff_size
 	/*b*/ Packet.WriteB(CubicBuffSize, va_arg(tag, PUCHAR)); //cubic_buff
-	
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//find_party_members
-	
-	 DWORD AbnormalVisualEffect = va_arg(tag, DWORD);
+	/*d*/ DWORD AbnormalVisualEffect = va_arg(tag, DWORD);	//abnormal_visual_effect
 			if(pUser->pSD->pExData->SkillMod.semiInvisible)
 			{
 				AbnormalVisualEffect |= 0x100000;	//Stealth
@@ -257,28 +284,14 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 			{
 				AbnormalVisualEffect |= 0x200000;
 			}
-		
-	/*d*/	Packet.WriteD(AbnormalVisualEffect);	//abnormal_visual_effect
-	
-	
+			Packet.WriteD(AbnormalVisualEffect);
 	/*c*/ Packet.WriteC(va_arg(tag, DWORD));	//unknown
-	
 	/*BuffSize*/ DWORD ClanPrivilegeBuffSize = va_arg(tag, DWORD); //c5fix = 4	//pledge_rights_buff_size
 	/*b*/ PUCHAR ClanPrivilege = va_arg(tag, PUCHAR); //ClanPrivileges - 32 BYTES	//pledge_rights_buff
-//	/*d*/ Packet.WriteD(8388606);	//write static rights
-	/*d*/ Packet.WriteD(0x00);	//C4 Fix?
-	
-	/*d*/ Packet.WriteD(0x00);
-	/*d*/ Packet.WriteD(0x00);
-	/*d*/ Packet.WriteD(0x00);
-	/*d*/ Packet.WriteD(0x00);
-	/*d*/ Packet.WriteD(0x00);
-	/*d*/ Packet.WriteD(0x00);
-	/*d*/ Packet.WriteD(0x00);
-
+		Packet.WriteD(8388606);	//write static rights
 	/*h*/ Packet.WriteH(va_arg(tag, WORD));		//recommendation_remaining
 	/*h*/ Packet.WriteH(va_arg(tag, WORD));		//recommendation_received
-	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//MountNpcId
+	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//unknown
 	/*h*/ Packet.WriteH(va_arg(tag, WORD));		//inventory_limit
 	
 	UINT classId = va_arg(tag, DWORD);
@@ -289,7 +302,6 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//max_cp
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//current_cp
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//enchant_effect
-	
 	/*c*/ BYTE bTeam = va_arg(tag, BYTE);		//team_circle
 
 			if(pUser->pSD->DuelInfo.DuelID && pUser->pSD->DuelInfo.Fighting)
@@ -299,7 +311,6 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 				bTeam = pUser->pED->tvtUser.team;
 
 			Packet.WriteC(bTeam); //1blue 2 red
-
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_large_crest_id
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//is_nobless
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//is_hero
@@ -341,6 +352,40 @@ void CPacketFix::UserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(NickNameColor);
 		va_end(tag);
 
+		//New C5 Things cdddddd
+		Packet.WriteC((BYTE)pUser->pSD->nMoveType);
+		Packet.WriteD(pUser->GetPledgeClass());
+		Packet.WriteD(pUser->GetPledgeType());
+		DWORD titleColor = g_DefaultTitleColor;
+	
+		if(pUser->pSD->nIsPledgeLeader && g_ClanLeaderTitleColor != 0)
+		{
+			titleColor = g_ClanLeaderTitleColor;
+		}
+				
+		if(g_PlayerCustomizer.IsEnabled())
+		{
+			titleColor = g_PlayerCustomizer.GetPvpTitleColor(pUser->pSD->nPvpCount);
+		}
+
+		if(pUser->pSD->nBuilder && g_GMTitleColor != 0)
+		{
+			titleColor = g_GMTitleColor;
+		}
+
+		if(pUser->pED->titleColor != 0)
+		{
+			titleColor = pUser->pED->titleColor;
+		}
+		if(pUser->pED->titleColorEx != 0)
+		{
+			titleColor = pUser->pED->titleColorEx;
+		}
+
+		Packet.WriteD(titleColor);
+		Packet.WriteD(pUser->pED->cursedWeaponLevel);
+		Packet.WriteD(pUser->GetPledgeReputation());
+
 		//SendNewInfo
 		pSocket->Send("b", Packet.GetSize(), Packet.GetBuff());
 	}
@@ -354,9 +399,7 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	va_list tag;
 	va_start (tag, format); //start reading old packet data and assembling new packet
 
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
-
-	/*c*/ Packet.WriteC(va_arg(tag, BYTE));//0x04
+	/*c*/ Packet.WriteC(va_arg(tag, BYTE));
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//x
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//y
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//z
@@ -418,7 +461,7 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(BaseClass);	//class
 
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//level
-	/*d*/ Packet.WriteD(va_arg(tag, INT32));	// - Exp will be Q in c5 format in format
+	/*d*/ Packet.WriteQ(va_arg(tag, INT64));	// - Exp will be Q in c5 format in format
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//str
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//dex
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//con
@@ -433,7 +476,6 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//current_load
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//max_load
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//unknown
-	
 	//PAPERDOLL_START objectId
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//dhair
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//rear
@@ -451,7 +493,7 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//back
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//lrhand
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//hair
-	
+	/*d*/ Packet.WriteD(0); 					//face - interlude addon
 	//PAPERDOLL item class id
 		INT32 dhairId = va_arg(tag, INT32);
 		INT32 rearId = va_arg(tag, INT32);
@@ -469,7 +511,7 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 		INT32 backId = va_arg(tag, INT32);
 		INT32 lrhandId = va_arg(tag, INT32);
 		INT32 hairId = va_arg(tag, INT32);
-		
+		INT32 faceId = 0;
 		if(g_VisualArmor.IsEnabled())
 		{
 			VisualArmorUser& vUser = pUser->pED->visualArmorUser;
@@ -512,9 +554,42 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*d*/ Packet.WriteD(backId);	//back
 	/*d*/ Packet.WriteD(lrhandId);	//lrhand
 	/*d*/ Packet.WriteD(hairId);	//hair
-	
+	/*d*/ Packet.WriteD(faceId);						//face - interlude addon
 	//PAPERDOLL_END
-	
+
+			UINT nAugmentation = pUser->GetAugmentationID();
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteD(nAugmentation);//Augmentation ID lhand
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteD(nAugmentation);//Augmentation ID lrhand
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
+			Packet.WriteH(0x00);
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//p_atk
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//p_atk_speed
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//p_def
@@ -552,16 +627,13 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 	/*S*/ Packet.WriteS(va_arg(tag, PWCHAR));	//title
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_id
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pledge_crest_id
-	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//ally_id	
+	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//ally_id
 
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//mount_type
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//private_store_mode
 	/*c*/ Packet.WriteC(va_arg(tag, BYTE));		//dwarven_craft_mode
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pk_count
 	/*d*/ Packet.WriteD(va_arg(tag, DWORD));	//pvp_count
-	
-	for(int i = 0;i<7;i++){ Packet.WriteD(0x00);}
-
 	/*h*/ Packet.WriteH(va_arg(tag, WORD));		//recommendation_remaining
 	/*h*/ Packet.WriteH(va_arg(tag, WORD));		//recommendation_received
 
@@ -612,6 +684,20 @@ void CPacketFix::GMUserInfoFix(CUserSocket *pSocket, const char *format, ...)
 			}
 	/*d*/ Packet.WriteD(NickNameColor);
 		va_end(tag);
+
+		//New C5 Things cdddddd
+		Packet.WriteC((BYTE)pUser->pSD->nMoveType);
+		Packet.WriteD(pUser->GetPledgeClass());
+		Packet.WriteD(pUser->GetPledgeType());
+		if(g_PlayerCustomizer.IsEnabled())
+		{
+			Packet.WriteD(g_PlayerCustomizer.GetPvpTitleColor(pUser->pSD->nPvpCount));
+		}else
+		{
+			Packet.WriteD(0x0ECF9A2);
+		}
+		Packet.WriteD(pUser->pED->cursedWeaponLevel);
+		Packet.WriteD(pUser->GetPledgeReputation());
 		
 		//SendNewInfo
 		pSocket->Send("b", Packet.GetSize(), Packet.GetBuff());
@@ -623,11 +709,11 @@ void CPacketFix::MyTargetSelected(CSocket *pSocket, const char* format, ...)
 {
 	va_list va;
 	va_start(va, format);
-	//cdh
+	//cdh -> cdhd
 	BYTE opCode = va_arg(va, BYTE);
 	DWORD targetId = va_arg(va, DWORD);
 	WORD wColor = va_arg(va, WORD);
 	va_end(va);
 	
-	pSocket->Send("cdh", opCode, targetId, wColor);
+	pSocket->Send("cdhd", opCode, targetId, wColor, 0);
 }

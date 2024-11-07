@@ -14769,7 +14769,7 @@ AS
 declare @sql varchar(1024)
 declare @conn_str varchar(256)
 
-set @conn_str = '127.0.0.' + @world_id + ''';''sa'';''LjweikT157'
+set @conn_str = '127.0.0.' + @world_id + ''';''sa'';''sa'
 
 
 set @sql = ' insert into req_charmove ( old_char_name, old_char_id, account_name, account_id,  old_world_id, new_world_id, new_char_name ) select R1.char_name, char_id, account_name, account_id, ' + @world_id + ' , 100, R1.char_name + ''-' + @world_id + '''   from ( select * from '
@@ -14790,7 +14790,7 @@ AS
 declare @sql varchar(1024)
 declare @conn_str varchar(256)
 
-set @conn_str = '127.0.0.' + @world_id + ''';''sa'';''LjweikT157'
+set @conn_str = '127.0.0.' + @world_id + ''';''sa'';''sa'
 
 set @sql = ' insert into req_charmove ( old_char_name, old_char_id, account_name, account_id,  old_world_id, new_world_id, new_char_name ) select R1.char_name, char_id, account_name, account_id, ' + @world_id + ' , 100, R1.char_name + ''-' + @world_id + '''   from ( select * from '
 	+ ' OPENROWSET ( ''SQLOLEDB'', ''' + @conn_str + ''', '' select pledge_id, char_id, char_name, account_id, account_name from lin2world.dbo.user_data (nolock) where account_id > 0  '' ) )  as R1 '
@@ -14811,7 +14811,7 @@ AS
 declare @sql varchar(1024)
 declare @conn_str varchar(256)
 
-set @conn_str = '127.0.0.' + @world_id + ''';''sa'';''LjweikT157'
+set @conn_str = '127.0.0.' + @world_id + ''';''sa'';''sa'
 
 set @sql = ' insert into pledge ( old_world_id, old_pledge_id,  old_ruler_id, ruler_id, name, alliance_id, challenge_time, root_name_value, now_war_id, oust_time, skill_level, castle_id, agit_id, rank, name_value, status, private_flag, crest_id, is_guilty, dismiss_reserved_time, alliance_ousted_time, alliance_withdraw_time, alliance_dismiss_time )  '
 	+ ' select ' + @world_id + '  , R1.pledge_id, ruler_id, 0, name + ''-' + @world_id + ''' , 0, 0, 0, 0 ,0 ,0 , 0, 0, 0, name_value, 0, 0, 0, 0, 0, 0, 0, 0  from ( select * from '

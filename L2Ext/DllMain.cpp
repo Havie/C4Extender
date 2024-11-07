@@ -11,6 +11,7 @@
 #include "PetAction.h"
 #include "OtherAction.h"
 #include "MPCC.h"
+#include "IOBufferExt.h"
 
 
 #pragma optimize("", off)
@@ -96,7 +97,7 @@ DllExport BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpvRes
 				CPostLoad::Initialize();
 				CSharedFactory::Initialize();
 				ClassExtender::Initialize();
-				PlayerAction::Initialize();			
+				PlayerAction::Initialize();
 				NpcAction::Initialize();
 				PetAction::Initialize();
 				CreatureAction::Initialize();
@@ -115,7 +116,7 @@ DllExport BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpvRes
 				InitializeSkillEnchanting();
 
 	#ifdef EXTEND_IOBUFFER
-				//CIOBufferExt::Init();
+				CIOBufferExt::Init();
 	#endif
 	//			ShowMessage("CreatureSharedData", "Size %p, lastVar %p", sizeof(CreatureSharedData), offsetof(CreatureSharedData, CreatureSharedData::_nextFreeVariable));
 	//			ShowMessage("CCreature", "Size %p, lastVar %p", sizeof(CCreature), offsetof(CCreature, CCreature::_unkn14F8));

@@ -70,7 +70,7 @@ BEGIN
         BLOCK "041504b0"
         BEGIN
             VALUE "Comments", "msn: vanganth@hotmail.com"
-            VALUE "FileDescription", "NpcExt - Extender for L2Npc server - part of C4Ext"
+            VALUE "FileDescription", "NpcExt - Extender for L2Npc server - part of IlExt"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "NpcExt"
             VALUE "LegalCopyright", "Copyright (C) Vanganth 2012"

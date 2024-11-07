@@ -17,100 +17,93 @@ void CPacketFix::CharSelectInfoFix(CUserSocket *pSocket, const char *szFormat, B
 		CPacket NewPacket;
 		for(unsigned int n=0;n<dwCharNum; n++)
 		{
-			/*S*/ NewPacket.WriteS(OldPacket.ReadS()); //Name
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD()); //CharId
-			/*S*/ NewPacket.WriteS(OldPacket.ReadS()); //LoginName
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//SessionId
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//ClanId
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Unknown
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Sex
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Race
-			UINT baseClass = OldPacket.ReadD();
+			/*S*/ NewPacket.WriteS(OldPacket.ReadS());
+				int nCharID = OldPacket.ReadD();
+			/*d*/ NewPacket.WriteD(nCharID);
+			/*S*/ NewPacket.WriteS(OldPacket.ReadS());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+					UINT baseClass = OldPacket.ReadD();
 					pSocket->pED->baseClass[n] = baseClass;
-			/*d*/ NewPacket.WriteD(baseClass);	//BaseClassId
+			/*d*/ NewPacket.WriteD(baseClass);	//base class
+
 			/*d*/ NewPacket.WriteD(OldPacket.ReadD());	//active
 			/*d*/ NewPacket.WriteD(OldPacket.ReadD());	//x
 			/*d*/ NewPacket.WriteD(OldPacket.ReadD());	//y
 			/*d*/ NewPacket.WriteD(OldPacket.ReadD());	//z
 			/*f*/ NewPacket.WriteF(OldPacket.ReadF());	//cur hp
 			/*f*/ NewPacket.WriteF(OldPacket.ReadF());	//cur mp
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//SP
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD()); //EXP			
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Unknown
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Level			
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Karma
-
-			//Skip 36 bytes
-			for(int i = 0;i<9;i++){NewPacket.WriteD(OldPacket.ReadD());}
-		
-			//ObjectType
-		
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Under
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//REar
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LEar
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Neck
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//RFinger
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LFinger
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Head
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//RHand			
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LHand
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Gloves
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Chest
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Legs
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Feet
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Back
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LRHand			
-			/*Fix*/ OldPacket.ReadD(); //Unknown - Correction
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD()); //Hair
-
-			//End of ObjectType
-
-			//ObjectId
-
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Under
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//REar
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LEar
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Neck
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//RFinger
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LFinger
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Head
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//RHand
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LHand
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Gloves
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Chest
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Legs			
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//Feet			
-				int nBackItemType = OldPacket.ReadD();
-			/*d*/ NewPacket.WriteD(nBackItemType);//Back								
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LRHand
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*Q*/ INT32 nExp = OldPacket.ReadD();
+				NewPacket.WriteQ(CL2LevelUP::GetExperience(nExp));
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+				int nHairDBID = OldPacket.ReadD();
+				int nFaceDBID = OldPacket.ReadD();
+			/*d*/ NewPacket.WriteD(nHairDBID); //Hair Slot dbid
+			/*d*/ NewPacket.WriteD(nFaceDBID); //Face Slot dbid
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
 				int nHairItemType = OldPacket.ReadD();
+				int nFaceItemType = OldPacket.ReadD();
 			/*d*/ NewPacket.WriteD(nHairItemType); //Hair Slot type
-			
-			//End of ObjectId									
-			NewPacket.Rewind(sizeof(INT32));
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//HairStyle
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//HairColor
-				OldPacket.ReadD();
-			NewPacket.Next(sizeof(INT32));
-				
-			/*f*/ NewPacket.WriteF(OldPacket.ReadF());//hp max
-			/*f*/ NewPacket.WriteF(OldPacket.ReadF());//mp max
-			
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD()); //Delete Days
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//ClassId
-			/*d*/ NewPacket.WriteD(OldPacket.ReadD());//LastUsed
-			/*c*/ NewPacket.WriteC(OldPacket.ReadC());//EnchantEffect
-						
-			
+			/*d*/ NewPacket.WriteD(nFaceItemType); //Face slot type
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*f*/ NewPacket.WriteF(OldPacket.ReadF());
+			/*f*/ NewPacket.WriteF(OldPacket.ReadF());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*d*/ NewPacket.WriteD(OldPacket.ReadD());
+			/*c*/ NewPacket.WriteC(OldPacket.ReadC());
+			UINT augmentation = OldPacket.ReadD();
+			/*d - new*/ NewPacket.WriteD(augmentation); //Augmentation ID
 
-			OldPacket.ReadD();
-			OldPacket.ReadS();
-			OldPacket.ReadS();
-			OldPacket.ReadD();
-			OldPacket.ReadS();
-			OldPacket.ReadD();
-			OldPacket.ReadS();		
-			
+			int EffectiveMana0 = OldPacket.ReadD();
+			int EffectiveMana1 = OldPacket.ReadD();
+			int EffectiveMana2 = OldPacket.ReadD();
+			int EffectiveMana3 = OldPacket.ReadD();
 		}
 		pSocket->Send(szFormat, bOpCode, dwCharNum, NewPacket.GetSize(), NewPacket.GetBuff());
 	}

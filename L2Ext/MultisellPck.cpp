@@ -10,10 +10,11 @@ int CPacketFix::MultisellIngredientsFix(PCHAR buff, int bufLen, const char *form
 	WORD ItemType = va_arg (tag, WORD);
 	DWORD Count = va_arg (tag, DWORD);
 	WORD Enchant = va_arg (tag, WORD);
-	va_end (tag);	
-	format = "hhdh"; //C4 Format
-	
-	return Assemble(buff,bufLen,format,ItemID,ItemType,Count,Enchant);
+	va_end (tag);
+	format = "hhdhdd"; //New IL Format
+	DWORD dUnkn = 0;
+	DWORD dUnkn2 = 0;
+	return Assemble(buff, bufLen, format, ItemID, ItemType, Count, Enchant, dUnkn, dUnkn2);
 }
 int CPacketFix::MultisellProductsFix(PCHAR buff, int bufLen, const char *format, ...)
 {
@@ -26,9 +27,10 @@ int CPacketFix::MultisellProductsFix(PCHAR buff, int bufLen, const char *format,
 	DWORD Count = va_arg (tag, DWORD);
 	WORD Enchant = va_arg (tag, WORD);
 	va_end (tag);
-	format = "hdhdh"; //C4 Format
-	
-	return Assemble(buff, bufLen, format, ItemID, dDw1, ItemType, Count, Enchant);
+	format = "hdhdhdd"; //New IL Format
+	DWORD dUnkn = 0;
+	DWORD dUnkn2 = 0;
+	return Assemble(buff, bufLen, format, ItemID, dDw1, ItemType, Count, Enchant, dUnkn, dUnkn2);
 }
 int CPacketFix::MultisellFix(PCHAR buff, int bufLen, const char *format, ...)
 {
@@ -44,7 +46,9 @@ int CPacketFix::MultisellFix(PCHAR buff, int bufLen, const char *format, ...)
 	DWORD dIngredSizeBuff = va_arg(tag, DWORD);
 	char *cIngredBuff = va_arg(tag, char*);
 	va_end (tag);
-	format = "dchhbb"; //C4 Format
-	return Assemble(buff, bufLen, format, EntryID, bByte1, ProductSize, IngredientSize, dProdSizeBuff,
+	format = "dddchhbb"; //New IL Format
+	DWORD dUnkn = 0;
+	DWORD dUnkn2 = 0;
+	return Assemble(buff, bufLen, format, EntryID, dUnkn, dUnkn2, bByte1, ProductSize, IngredientSize, dProdSizeBuff,
 		cProdBuff, dIngredSizeBuff, cIngredBuff);
 }

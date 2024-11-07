@@ -9,8 +9,7 @@ int CPacketFix::SkillListFix(PCHAR buf, int bufLen, const char *format, ...)
 	DWORD dLevel = va_arg (tag, DWORD);
 	DWORD dSkillID = va_arg (tag, DWORD);
 	va_end (tag);
-	//format = "dddc"; //New C5 format
-	format = "ddd";//C4
-	//BYTE bNull = 0x00;
-	return Assemble(buf, bufLen, format, dPassive, dLevel, dSkillID);
+	format = "dddc"; //New C5 format
+	BYTE bNull = 0x00;
+	return Assemble(buf, bufLen, format, dPassive, dLevel, dSkillID, bNull);
 }

@@ -393,7 +393,17 @@ TerritoryType CTerritoryEx::CastType(int nType)
 		{
 			return GODDARD_CASTLE;
 			break;
-		}	
+		}
+	case RUNE_CASTLE:
+		{
+			return RUNE_CASTLE;
+			break;
+		}
+	case SCHUTTGARD_CASTLE:
+		{
+			return SCHUTTGARD_CASTLE;
+			break;
+		}
 	case FORBIDDEN_OFFLINE_SHOP_ZONE:
 		{
 			return FORBIDDEN_OFFLINE_SHOP_ZONE;

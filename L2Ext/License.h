@@ -4,26 +4,31 @@ namespace License
 {
 	enum LicenseType
 	{
-		LicenseInstanceZone = 0,
-		LicensePvPAnnounce,
-		LicenseHtmlPIN,
-		LicenseRebirth,
+		LicenseNone = 0,
+		LicenseExtUse,
+		LicenseSkillMaster,
+		LicenseInstanceZone,
 		LicenseSubStack,
+		LicenseChatManager,
+		LicenseRebirth,
 		LicenseChampionNpc,
 		LicenseDBNpcMaker,
 		LicenseRecipeManager,
-		LicenseExtUse,
-		LicenseSkillMaster,
-		LicenseChatManager
-	};
-	class CLicense
-	{
-	public:
-		static CLicense& GetInstance();
-		bool CanUse(LicenseType x);
-		void SendPostRequest();
-		string GetPostReply();
-		void Init();
+		LicenseHtmlPIN,
+		LicensePvPAnnounce,
+		LicenseCount
 	};
 
+	class CLicense
+	{
+		map<wstring, vector<LicenseType>> m_Data;
+		wstring m_LicenseName;
+		string m_PostReply;
+	public:
+		static CLicense& GetInstance();
+		void Init();
+		void SendPostRequest();
+		inline string GetPostReply() { return m_PostReply; };
+		bool CanUse(LicenseType licenseType);
+	};
 }

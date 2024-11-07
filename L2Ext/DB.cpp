@@ -860,8 +860,7 @@ bool CDBPacket::Handler(CDBSocket *pSocket, const unsigned char* packet)
 	guard;
 	UINT packetId;
 	packet = Disassemble(packet, "d", &packetId);
-	
-	g_Log.Add(CLog::Blue, "[%s]", __FUNCTION__);
+	//g_Log.Add(CLog::Blue, "[%s] called opcode[%d]", __FUNCTION__, nOpCode);
 
 	if(packetId <256)
 	{

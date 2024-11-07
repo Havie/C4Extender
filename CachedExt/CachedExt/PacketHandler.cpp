@@ -1947,7 +1947,7 @@ bool PacketHandler::RequestSaveCharacterHwid(CQuerySocket *pQuerySocket, const u
 }
 
 bool PacketHandler::RequestLockAccount(CQuerySocket *pQuerySocket, const unsigned char* packet)
-{	
+{
 	guard;
 	UINT accountId = 0;
 	WCHAR wName[25];
@@ -1979,7 +1979,7 @@ bool PacketHandler::RequestLockAccount(CQuerySocket *pQuerySocket, const unsigne
 }
 
 bool PacketHandler::RequestUnlockAccount(CQuerySocket *pQuerySocket, const unsigned char* packet)
-{	
+{
 	guard;
 	UINT accountId = 0;
 	Disassemble(packet, "d", &accountId);

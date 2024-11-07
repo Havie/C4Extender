@@ -5,11 +5,11 @@ LPVOID L2_New(int nSize);
 void L2_Delete(LPVOID pPointer);
 
 class CPacket
-{	
+{
+	size_t pos;
 	bool readonly;
 	CHAR buff[8190];
 	PUCHAR readBuff;
-	size_t pos;
 public:
 	CPacket();
 	CPacket(PUCHAR packet);
@@ -31,11 +31,5 @@ public:
 	double ReadF();
 	PWCHAR ReadS();
 	char *ReadB(int nLen);
-	
-	//New Functions
-	void Rewind(size_t x);
-	void Next(size_t x);
-	//New Functions
-	
 	virtual ~CPacket();
 };

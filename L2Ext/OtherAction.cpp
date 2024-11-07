@@ -615,7 +615,7 @@ HWND COtherAction::CreateWindowExWHook(DWORD dwExStyle,LPCWSTR lpClassName,LPCWS
 {
 	DWORD dwSize;
 	TCHAR File[256];
-	GetModuleFileName( GetModuleHandle(_T("C4Ext.dll")), File, 256 );
+	GetModuleFileName( GetModuleHandle(_T("IlExt.dll")), File, 256 );
 	dwSize = GetFileVersionInfoSize(File, NULL);
 	LPVOID pData = new char[dwSize];
 	memset(pData, 0, dwSize);
@@ -627,7 +627,7 @@ HWND COtherAction::CreateWindowExWHook(DWORD dwExStyle,LPCWSTR lpClassName,LPCWS
 	//_AnsiToUnicode((char*)pVersion, wVersion);
 	wcscpy_s(wVersion, 128, (const WCHAR*)pVersion);
 	delete [] pData;
-	wstring wTitle = L"L2Server - C4Ext ";
+	wstring wTitle = L"L2Server - IlExt ";
 	wTitle += wVersion;
 	wTitle = CParser::Replace(wTitle, L',', L'.');
 	g_ExtReleaseVersion = wTitle;

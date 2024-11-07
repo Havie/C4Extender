@@ -558,9 +558,6 @@ void PlayerAction::TradeCancelled(CTrade *pTrade, User *pTrader)
 
 bool PlayerAction::OnTeleportToLocation(User *pUser, int nX, int nY, int nZ, int FadeScreen)
 {
-	g_Log.Add(CLog::Blue,"[%s]",__FUNCTION__);
-	
-	
 	typedef bool (*f)(User*, int, int, int, int);
 
 	if(pUser->ValidUser() && !pUser->pSD->nInBattleField && pUser->pSD->nInPeaceZone && pUser->pSD->nKarma == 0)
@@ -574,7 +571,7 @@ bool PlayerAction::OnTeleportToLocation(User *pUser, int nX, int nY, int nZ, int
 		}
 	}
 
-	//pUser->pCreatureController->AsyncDoNothing();
+	pUser->pCreatureController->AsyncDoNothing();
 	
 	if(pUser->IsNowTrade())
 	{
@@ -593,9 +590,9 @@ bool PlayerAction::OnTeleportToLocation(User *pUser, int nX, int nY, int nZ, int
 
 	if(f(0x8151E0)(pUser, nX, nY, nZ, FadeScreen))
 	{	
-		//g_CursedWeaponSystem.OnTeleport(pUser);
+		g_CursedWeaponSystem.OnTeleport(pUser);
 		return true;
-	}	
+	}
 
 	return false;
 }
@@ -884,8 +881,6 @@ void PlayerAction::OnTimerExpired(User *pUser, int nTimerID)
 
 bool PlayerAction::UnequipItem(User *pUser, int nSlotType)
 {
-	g_Log.Add(CLog::Black,"[%s] -> nSlotType = [%d]",__FUNCTION__,nSlotType);
-
 	if(pUser->ValidUser())
 	{
 		if(pUser->pSD->nCursedOwner && nSlotType == CItem::LRHand)
@@ -910,8 +905,6 @@ CParty *PlayerAction::OnUpdateHP(User *pUser)
 
 bool PlayerAction::UseItem(User *pUser, CItem *pItem, int nForce)
 {
-	g_Log.Add(CLog::Blue,"[%s] SlotType = [%d]",__FUNCTION__,pItem->pSID->nSlotType);
-
 	if(pItem->IsValidItem() && pUser->ValidUser())
 	{
 		if(pUser->IsNowTrade())
@@ -998,7 +991,6 @@ bool PlayerAction::UseItem(User *pUser, CItem *pItem, int nForce)
 		}
 
 		int TerritoryID = pUser->pSD->nInBlockItemsZone;
-		
 		if(TerritoryID)
 		{
 			CBlockItemsTerritory *pTerritory = g_TerritoryChecker.GetTerritory(TerritoryID)->SafeCastBlockItems();
@@ -1014,8 +1006,6 @@ bool PlayerAction::UseItem(User *pUser, CItem *pItem, int nForce)
 		
 		return pUser->UseItem(pItem, nForce);
 	}
-	g_Log.Add(CLog::Error,"Not Valid Item!");
-
 	return false;
 }
 

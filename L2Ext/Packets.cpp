@@ -9,11 +9,9 @@ void CPacketFix::Initialize()
 	{
 		g_CharInfoUser[n] = 0;
 	}
-	
 	g_HookManager.WriteCall( 0x58B9F3, LoadCharSelectedPacket, 0);
 	g_HookManager.WriteJump( 0x574B48, LoadCharacterDiss, 0);
 	g_HookManager.WriteCall( 0x574C31, CharSelectInfoFix, 0);
-
 	//Sell bug fix by TestDude
 	g_HookManager.WriteMemoryBYTE(0x87A4EA, 0x44);
 	//Buy item bug by me
@@ -93,7 +91,6 @@ void CPacketFix::Initialize()
 	//DoorInfo
 	g_HookManager.WriteCall(0x7FEF32, SendDoorInfo, 0);
 	g_HookManager.WriteCall(0x776A63, SendDoorInfo, 0);
-
 }
 
 void CPacketFix::CharInfoSetUser(User *pUser, CUserSocket *pGMSocket)
@@ -116,27 +113,24 @@ void CPacketFix::CharInfoSetUser(User *pUser, CUserSocket *pGMSocket)
 
 int CPacketFix::AssembleShortCutInfo(PCHAR lpBuff, int len, PCSTR format, ...)
 {
-	//C4 = "ddddd"
 	va_list vl;
 	va_start(vl, format);
 	INT32 Type = va_arg(vl, INT32);	
 	INT32 slot  = va_arg(vl, INT32);
 	INT32 id    = va_arg(vl, INT32);
-	INT32 level = 0,param = 0;
+	INT32 param = 0, level = 0;
 	INT32 ret = 0;
-	
 	switch(Type)
 	{
 		case ShortCutSkill:
 			{
 				level = va_arg(vl, INT32);
 				param = va_arg(vl, INT32);
-				ret = Assemble(lpBuff, len, "ddddd", Type, slot, id, level,param);
+				ret = Assemble(lpBuff, len, "ddddcd", Type, slot, id, level,/* skill disabled */ 0, param );
 				break;
 			}
 		case ShortCutItem:
 			{
-				/*
 				INT32 param = va_arg(vl, INT32);
 				Augmentation augmentation;
 				int reuseGroup = -1;
@@ -152,9 +146,8 @@ int CPacketFix::AssembleShortCutInfo(PCHAR lpBuff, int len, PCSTR format, ...)
 						reuseGroup = pEx->GetReuseGroup();
 					}
 				}
-				*/
 
-				ret = Assemble(lpBuff, len, "dddd", Type, slot, id, 1);
+				ret = Assemble(lpBuff, len, "dddddddhh", Type, slot, id, param, reuseGroup, reuse, 0, augmentation.Part.effectA, augmentation.Part.effectB);
 				break;
 			}
 		case ShortCutAction:
@@ -171,7 +164,6 @@ int CPacketFix::AssembleShortCutInfo(PCHAR lpBuff, int len, PCSTR format, ...)
 
 void CPacketFix::AddShortCut(CUserSocket *pSocket, PCSTR format, ...)
 {
-	//C4
 	va_list vl;
 	va_start(vl, format);
 	BYTE opCode = va_arg(vl, BYTE);
@@ -179,13 +171,12 @@ void CPacketFix::AddShortCut(CUserSocket *pSocket, PCSTR format, ...)
 	INT32 slot = va_arg(vl, INT32);
 	INT32 id = va_arg(vl, INT32);
 	INT32 param = 0, level = 0;
-	
 	switch(type)
 	{
 		case ShortCutSkill:
 				level = va_arg(vl, INT32);
 				param = va_arg(vl, INT32);
-				pSocket->Send("cddddd", opCode, type, slot, id, level, param);
+				pSocket->Send("cddddcd", opCode, type, slot, id, level, /* c5 */ 0, param);
 				break;
 		case ShortCutItem:	
 		case ShortCutAction:

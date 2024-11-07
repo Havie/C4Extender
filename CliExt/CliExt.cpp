@@ -2,12 +2,12 @@
 //
 
 #include "stdafx.h"
+#include "CliExt.h"
 #include "ClientSocket.h"
 #include "NetworkHandler.h"
 #include "MemoryProtector.h"
 #include "Crypt.h"
 #include "MD5.h"
-#include "CliExt.h"
 
 BOOL g_Initialized = FALSE;
 HMODULE g_Engine = 0;

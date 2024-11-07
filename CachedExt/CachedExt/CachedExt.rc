@@ -69,7 +69,7 @@ BEGIN
     BEGIN
         BLOCK "041504b0"
         BEGIN
-            VALUE "FileDescription", "CacheD Extension to support C4Ext"
+            VALUE "FileDescription", "CacheD Extension to support IlExt"
             VALUE "FileVersion", "1, 2, 6, 5"
             VALUE "InternalName", "CachedEx"
             VALUE "LegalCopyright", "Copyright (C) Vanganth 2009"

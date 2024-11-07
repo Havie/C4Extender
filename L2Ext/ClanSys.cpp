@@ -51,7 +51,6 @@ void ClanSys::LeaveExpelLock(LPVOID lpRWLock)
 
 void ClanSys::Initialize()
 {
-	
 	InitializeCriticalSection(&g_ExpelBannedUsersLock);
 	g_HookManager.WriteCall(0x9701ED, DeleteExpelLock);
 	
@@ -93,12 +92,12 @@ void ClanSys::Initialize()
 	g_ClanMembersLimit.MainClan0 = GetPrivateProfileInt(section, _T("MainClan0Limit"), 10, g_ConfigFile);
 	g_ClanMembersLimit.MainClan1 = GetPrivateProfileInt(section, _T("MainClan1Limit"), 15, g_ConfigFile);
 	g_ClanMembersLimit.MainClan2 = GetPrivateProfileInt(section, _T("MainClan2Limit"), 20, g_ConfigFile);
-	g_ClanMembersLimit.MainClan3 = GetPrivateProfileInt(section, _T("MainClan3Limit"), 30, g_ConfigFile);
-	g_ClanMembersLimit.MainClan4 = GetPrivateProfileInt(section, _T("MainClan4Limit"), 40, g_ConfigFile);
+	g_ClanMembersLimit.MainClan3 = GetPrivateProfileInt(section, _T("MainClan3Limit"), 25, g_ConfigFile);
+	g_ClanMembersLimit.MainClan4 = GetPrivateProfileInt(section, _T("MainClan4Limit"), 30, g_ConfigFile);
 
 	g_ClanMembersLimit.Academy = GetPrivateProfileInt(section, _T("AcademyLimit"), 20, g_ConfigFile);
-	g_ClanMembersLimit.RoyalGuard = GetPrivateProfileInt(section, _T("RoyalGuardLimit"), 20, g_ConfigFile);
-	g_ClanMembersLimit.OrderOfKnight = GetPrivateProfileInt(section, _T("OrderOfKnightLimit"), 10, g_ConfigFile);
+	g_ClanMembersLimit.RoyalGuard = GetPrivateProfileInt(section, _T("RoyalGuardLimit"), 10, g_ConfigFile);
+	g_ClanMembersLimit.OrderOfKnight = GetPrivateProfileInt(section, _T("OrderOfKnightLimit"), 8, g_ConfigFile);
 
 	//;Pledge_x=item_id;count;sp_count;reputation_count;member_count
 	for(int n=0;n<8;n++)
@@ -144,9 +143,6 @@ void ClanSys::Initialize()
 	//Updating already logged in members privilege / clan skills
 	g_HookManager.WriteCall( 0x59203B, UpdateMembers, 0);
 	//Packets
-	
-	/* C4 Fix?
-	
 	g_HookManager.WriteCall( 0x590BA6, CPledge_OpenAllWindowPacket, 0);
 	g_HookManager.WriteCall( 0x591349, CPledge_OpenAllWindowPacket, 0);
 	g_HookManager.WriteCall( 0x8809DE, CPledge_OpenAllWindowPacket, 0);
@@ -183,7 +179,6 @@ void ClanSys::Initialize()
 	g_HookManager.WriteCall( 0x5A64BC, CPledge_UpdateInfoWindowPacket, 0);
 	g_HookManager.WriteCall( 0x5A6B49, CPledge_UpdateInfoWindowPacket, 0);
 	g_HookManager.WriteCall( 0x769251, CPledge_UpdateInfoWindowPacket, 0);
-	*/
 	
 	//Increase pledge level
 	g_HookManager.WriteCall( 0x898709, PledgeLevelUpByNPC, 0);
@@ -216,8 +211,6 @@ void ClanSys::Initialize()
 
 	LoadReputationData();
 	g_PledgeSkillDb.Init();
-
-	
 }
 
 void ClanSys::LoadReputationData()

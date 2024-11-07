@@ -176,8 +176,8 @@ public:
 		Hair = 16,
 		Dress = 17,
 		//new slots
-//C5/CT0 Feature		HairDeco = 18,
-//C5/CT0 Feature		HairAll = 19
+		HairDeco = 18,
+		HairAll = 19
 	};
 public:
 	/* 0030 */ CSharedItemData *pSID;

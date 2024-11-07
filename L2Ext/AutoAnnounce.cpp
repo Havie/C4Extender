@@ -15,7 +15,6 @@ CAutoAnnounce::~CAutoAnnounce()
 void CAutoAnnounce::Init()
 {
 	m_reload = FALSE;
-	m_enabled = FALSE;
 	m_data.clear();
 	m_BossList.clear();
 	LoadINI();
@@ -28,7 +27,7 @@ void CAutoAnnounce::Init()
 /*
 Enabled=1
 AnnounceCount=2
-Announce1_Message=Welcome to ServerName Lineage II C4 server, hope you enjoy.
+Announce1_Message=Welcome to ServerName Lineage II Interlude server, hope you enjoy.
 Announce1_ShowOnEnterWorld=1
 Announce1_Interval=0
 Announce2_Message=Please remember to vote for us, more info at www.servername.com thx in advance.
@@ -78,24 +77,23 @@ void CAutoAnnounce::LoadINI()
 			keyStream << L"Announce" << (n+1) <<L"_Interval";
 			aad.interval = GetPrivateProfileInt(section, keyStream.str().c_str(), 0, g_ConfigFile);
 		}
-		if(temp[0] != '\0')
-		{
-			m_data.push_back(aad);
-		}
+		m_data.push_back(aad);
 	}
 }
 
 void CAutoAnnounce::TimerExpired()
 {
-	CTL;
-	if(m_enabled || m_reload)
+	guard;
+	if(m_enabled)
 	{
-		AUTO_LOCK(m_lock);
+		m_lock.Enter();
 		if(m_reload)
 		{
 			Init();
 			if(!m_enabled)
 			{
+				m_lock.Leave();
+				unguard;
 				return;
 			}
 		}
@@ -113,17 +111,19 @@ void CAutoAnnounce::TimerExpired()
 				}
 			}
 		}
+		m_lock.Leave();
 	}
+	unguard;
 }
 
 void CAutoAnnounce::OnEnterWorld(User *pUser)
 {
-	CTL;
+	guard;
 	if(m_enabled)
 	{
 		if(pUser->ValidUser())
 		{
-			AUTO_LOCK(m_lock);
+			m_lock.Enter();
 			for(UINT n=0;n<m_data.size();n++)
 			{
 				AutoAnnounceData& data = m_data[n];
@@ -131,14 +131,17 @@ void CAutoAnnounce::OnEnterWorld(User *pUser)
 				{
 					pUser->pSocket->Send("cddSS", 0x4A, 0, 0xA, L"", data.announce.c_str());
 				}
-			}		
+			}
+			m_lock.Leave();			
 		}
 	}
+	unguard;
 }
 
 void CAutoAnnounce::OnBossEnterWorld(UINT npcClassId)
 {
-	CTL;
+	guard;
+
 	if(m_enabled)
 	{
 		bool affected = false;
@@ -168,4 +171,6 @@ void CAutoAnnounce::OnBossEnterWorld(UINT npcClassId)
 			L2Server::BroadcastToAllUser(len, buff);
 		}
 	}
+
+	unguard;
 }

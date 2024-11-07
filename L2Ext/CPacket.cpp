@@ -188,12 +188,3 @@ char *CPacket::ReadB(int nLen)
 	pos += nLen;
 	return cBuff;
 }
-//New Functions
-void CPacket::Rewind(size_t x)
-{
-	pos -= x;
-}
-void CPacket::Next(size_t x)
-{
-	pos += x;
-}
